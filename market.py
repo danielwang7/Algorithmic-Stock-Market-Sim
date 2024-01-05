@@ -1,4 +1,3 @@
-import NormalInvestor
 import CompanyPrices
 import math
 import time
