@@ -5,55 +5,91 @@ import random
 
 class momentumInvestor:
 
-    def __init__(self, id, money):
-        self.id = id
-        self.avaMoney = float(money)
-        self.outgoingOrder = {
-           'D' : 0,
-           'I' : 0
-             } # dictionary of outgoing order
-        self.evaluationPeriod = 5
-        self.evaluationRigor = 5
+    def __init__(self, id, money, confidence):
+        self.investorId = id
+        self.avaMoney = money
+       
+        self.buyOrders = np.array([('test company', 0)],
+                      dtype=[('stock', 'U30'), ('quantity', 'i4')])
+           # structured array to store outgoing orders, TRUE is buy FALSE is sell
+        
+        self.sellOrders = np.array([('test company', 0)],
+                      dtype=[('stock', 'U30'), ('quantity', 'i4')])
+        
+        self.confidenceVal = confidence
+        # a variable to influence the behavior of investors
+
+        self.consecutiveIncrease = np.array([('test company', 0)],
+                                   dtype= [('stock', 'U30'), ('increase', 'i4')])
+
+        self.consecutiveDecrease = np.array([('test company', 0)],
+                         dtype= [('stock', 'U30'), ('decrease', 'i4')])
+        
+        # counter variable to keeping track of decreases/increases
+        self.counter = 0
+
+
     
     def buildPortfolio(self, stockData, company):
         """call to populate portfolio at
            the start of the simulation"""
         
-         # the evaluation period changes the timeframe reference to determine if a stock should be brought
-        if self.money >= stockData[-1]:
-           
-           if ((stockData[-1] - stockData[-self.evaluationPeriod]) / (self.evaluationPeriod) > self.evaluationRigor):
-              if random.random() < 0.5:
-                 if company == 'GI':
-                    self.outgoingOrder['I'] += 1
-
-                 if company == 'GD':
-                    self.outgoingOrder['D'] += 1
-
-                    #TODO: THIS HAS TO BE FIXED
+        pass
+        
     
-
-    def determinePurchase(self, stockData):
+    def determinePurchase(self, companyName, stockData):
        """reads in historical data from stock
           and apply strategy to decide purchases"""
        
-       for stock in self.stockCompany:
-           if stock == 1:
-               if self.stockPurPrice[stock.index()] < stockData [-1]:
+       # track the consecutive increases/decreases in stock trends, resetting to zero if streak is broken
 
-                    #TODO: IMPLEMENT
-            
-                   self.money -= stockData[-1]
-                   print(f"Buyer {self.id} bought at {stockData[-1]}, Money left: {self.money}")
-            
-               else:
-                   print(f"Buyer {self.id} can't afford to buy at {stockData[-1]}, Money left: {self.money}")
+       if (self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] < (10 - self.confidenceVal) or
+          self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] < (10 - self.confidenceVal)):
+           
+        if stockData[-1] >= stockData[-2]:
+            self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] += 1
+            self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] = 0
 
-    def determineSell(self):
-        pass
-    
+        else:
+            self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] = 0
+            self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] += 1
 
-                
- 
+       # after 10 consecutive increases (streak req decreased by confidence), 3 drops are tolerated, this is tracked by counter
 
-    
+
+         # checker for increases post initial streak
+       if (self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] >= (10 - self.confidenceVal)):
+          if stockData[-1] <= stockData[-2]:
+             self.counter += 1
+          else:
+             self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] += 1
+         
+         # checker for decreases post initial streak
+       elif self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] >= (10 - self.confidenceVal):
+           if stockData[-1] >= stockData[-2]:
+             self.counter += 1
+           else:
+              self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] += 1
+         
+         # clears tracking if 3 decrease/increase are observed
+       if self.counter >= 3:
+          self.counter = 0
+          self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] = 0
+          self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] = 0
+
+         # places orders if adequate increases/decreases are met
+       if self.consecutiveIncrease['increase'][self.consecutiveIncrease['stock'] == companyName] >= (14 - self.confidenceVal):
+
+            # TODO: Edit how much to sell or buy!
+            # self.orders['quantity'][self.orders['stock'] == companyName] = self.confidenceVal
+            # NEED TO CHECK IF THERE IS SUFFICIENT MONEY
+
+          print(f'{companyName} at {stockData[-1]} purchased!')
+
+
+       if self.consecutiveDecrease['decrease'][self.consecutiveIncrease['stock'] == companyName] >= (14 - self.confidenceVal):
+
+          print(f'{companyName} at {stockData[-1]} sold!')
+
+               
+       return 
