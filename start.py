@@ -14,7 +14,7 @@ if __name__ == "__main__":
         Test.startInvestorTests()
     
     elif choice == 2:
-        print('NOT IMPLEMENTED')
+        market.main()
 
     else:
         print ("invalid selection")

@@ -1,11 +1,24 @@
 from momentumInvestor import momentumInvestor
+from reversionInvestor import reversionInvestor
 import pandas as pd
 import numpy as np
 
 
+L1 = list([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
 def startInvestorTests():
 
+    reversionInvestorTest()
+    
+
+
+
+    
+
+    return
+    
+
+def momentumInvestorTests():
     Investor = momentumInvestor(1, 2000, 5)
 
     historical_prices = list(range(0, 15))
@@ -42,8 +55,17 @@ test company at 2 sold!
 
      Investor.determinePurchase('test company', historical_prices[0:i + 2])
 
+     return
 
-    return
-    
     
 
+def reversionInvestorTest():
+   
+    historical_prices = list([100, 100 ,100, 115, 115, 130, 130, 130, 130, 130, 130, 130, 130])
+
+    RevInvestor = reversionInvestor(1, 100, 5)
+
+    for i in range(0,len(historical_prices) + 2):
+       if i % 3 == 0:
+          RevInvestor.getAverage(historical_prices[0:i + 2])
+       RevInvestor.determinePurchase('test company', historical_prices[0:i + 2])
