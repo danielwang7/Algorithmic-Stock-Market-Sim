@@ -43,12 +43,12 @@ class reversionInvestor:
         if len(stockData) <= self.averagePeriod:
             self.averagePrice = sum(stockData) / len(stockData)
         else:
-            # FIX THIS TO ACCOUNT FOR THE LAST VALUE!!!!!!!!!!!!!!!!!
             self.averagePrice = sum(stockData[-4:]) / self.averagePeriod
 
 
     def determinePurchase(self, companyName, stockData):
 
+        # THERE IS DEVISION BY ZERO BUG HERE HELP
         excess = stockData[-1] / self.averagePrice - 1
 
         if excess > self.averageThreshhold:

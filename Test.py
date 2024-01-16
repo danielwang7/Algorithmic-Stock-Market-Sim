@@ -4,15 +4,21 @@ import pandas as pd
 import numpy as np
 
 
+# FOLLOWING ARE TEST VARIABLES
 L1 = list([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+
+buyOrders = np.array([('Comp A', 2, 1), ('Comp B', 5, 1), ('Comp C', 2, 1)],
+                      dtype=[('stock', 'U30'), ('quantity', 'i4'), ('ID', 'i4')])
+
+        
+sellOrders = np.array([('Comp B', 5, 1), ('Comp A', 5, 1), ('Comp C', 5, 1)],
+                      dtype=[('stock', 'U30'), ('quantity', 'i4'), ('ID', 'i4')])
+
 
 def startInvestorTests():
 
     reversionInvestorTest()
-    
-
-
-
     
 
     return

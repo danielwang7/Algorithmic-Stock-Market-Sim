@@ -1,5 +1,5 @@
 import Test
-import market
+import stockSimulator
     
 if __name__ == "__main__":
     print ("-------------------------------")
@@ -14,7 +14,7 @@ if __name__ == "__main__":
         Test.startInvestorTests()
     
     elif choice == 2:
-        market.main()
+        stockSimulator.startSim()
 
     else:
         print ("invalid selection")
